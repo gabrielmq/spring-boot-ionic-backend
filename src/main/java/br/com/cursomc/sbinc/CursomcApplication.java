@@ -13,6 +13,7 @@ import br.com.cursomc.sbinc.domain.Cidade;
 import br.com.cursomc.sbinc.domain.Cliente;
 import br.com.cursomc.sbinc.domain.Endereco;
 import br.com.cursomc.sbinc.domain.Estado;
+import br.com.cursomc.sbinc.domain.ItemPedido;
 import br.com.cursomc.sbinc.domain.Pagamento;
 import br.com.cursomc.sbinc.domain.PagamentoComBoleto;
 import br.com.cursomc.sbinc.domain.PagamentoComCartao;
@@ -25,6 +26,7 @@ import br.com.cursomc.sbinc.repositories.CidadeRepository;
 import br.com.cursomc.sbinc.repositories.ClienteRepository;
 import br.com.cursomc.sbinc.repositories.EnderecoRepository;
 import br.com.cursomc.sbinc.repositories.EstadoRepository;
+import br.com.cursomc.sbinc.repositories.ItemPedidoRepository;
 import br.com.cursomc.sbinc.repositories.PagamentoRepository;
 import br.com.cursomc.sbinc.repositories.PedidoRepository;
 import br.com.cursomc.sbinc.repositories.ProdutoRepository;
@@ -56,17 +58,19 @@ public class CursomcApplication implements CommandLineRunner {
 	@Autowired
 	private PagamentoRepository pagamentoRepository;
 	
+	@Autowired
+	private ItemPedidoRepository itemPedidoRepository;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
-		criarProdutoCategoria();
-		criarClienteEndereco();
+		cargaInicial();
 	}
 
-	private void criarProdutoCategoria() {
+	private void cargaInicial() throws Exception {
 		Categoria cat1 = new Categoria(null, "Informática");
 		Categoria cat2 = new Categoria(null, "Escritório");
 		
@@ -83,9 +87,7 @@ public class CursomcApplication implements CommandLineRunner {
 		
 		categoriaRepository.saveAll(Arrays.asList(cat1, cat2));
 		produtoRepository.saveAll(Arrays.asList(p1, p2, p3));
-	}
-	
-	private void criarClienteEndereco() throws Exception {
+		
 		Estado est1 = new Estado(null, "Minas Gerais");
 		Estado est2 = new Estado(null, "São Paulo");
 		
@@ -126,6 +128,18 @@ public class CursomcApplication implements CommandLineRunner {
 				
 		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
 		pagamentoRepository.saveAll(Arrays.asList(pagto1, pagto2));
+		
+		ItemPedido ip1 = new ItemPedido(ped1, p1, 0.00, 1, 2000.00);
+		ItemPedido ip2 = new ItemPedido(ped1, p3, 0.00, 2, 80.00);
+		ItemPedido ip3 = new ItemPedido(ped2, p2, 100.00, 1, 800.00);
+		
+		ped1.getItens().addAll(Arrays.asList(ip1, ip2));
+		ped2.getItens().addAll(Arrays.asList(ip3));
+		
+		p1.getItens().addAll(Arrays.asList(ip1));
+		p2.getItens().addAll(Arrays.asList(ip3));
+		p3.getItens().addAll(Arrays.asList(ip2));
+		
+		itemPedidoRepository.saveAll(Arrays.asList(ip1, ip2, ip3));
 	}
-
 }
