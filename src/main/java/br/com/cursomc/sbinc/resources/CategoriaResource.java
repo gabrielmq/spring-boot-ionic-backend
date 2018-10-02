@@ -40,4 +40,10 @@ public class CategoriaResource {
 		categoria = service.update(categoria);
 		return ResponseEntity.noContent().build();
 	}
+	
+	@RequestMapping(value = "/{categoriaId}", method = RequestMethod.DELETE)
+	public ResponseEntity<Void> delete(@PathVariable Integer categoriaId) {
+		service.delete(categoriaId);
+		return ResponseEntity.noContent().build();
+	}
 }
