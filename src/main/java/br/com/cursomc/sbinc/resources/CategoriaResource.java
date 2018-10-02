@@ -1,6 +1,7 @@
 package br.com.cursomc.sbinc.resources;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.cursomc.sbinc.domain.Categoria;
+import br.com.cursomc.sbinc.domain.dto.CategoriaDTO;
 import br.com.cursomc.sbinc.services.CategoriaService;
 
 @RestController
@@ -45,5 +47,10 @@ public class CategoriaResource {
 	public ResponseEntity<Void> delete(@PathVariable Integer categoriaId) {
 		service.delete(categoriaId);
 		return ResponseEntity.noContent().build();
+	}
+	
+	@RequestMapping(method = RequestMethod.GET)
+	public ResponseEntity<List<CategoriaDTO>> findAll() {
+		return ResponseEntity.ok().body(service.findAll());
 	}
 }
