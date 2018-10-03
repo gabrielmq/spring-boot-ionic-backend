@@ -1,5 +1,6 @@
 package br.com.cursomc.sbinc.resources;
 
+import java.net.URI;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.cursomc.sbinc.domain.Cliente;
 import br.com.cursomc.sbinc.domain.dto.ClienteDTO;
+import br.com.cursomc.sbinc.domain.dto.ClienteNewDTO;
 import br.com.cursomc.sbinc.services.ClienteService;
 
 @RestController
@@ -28,6 +31,15 @@ public class ClienteResource {
 	@RequestMapping(value = "/{clienteId}", method = RequestMethod.GET)
 	public ResponseEntity<Cliente> findById(@PathVariable Integer clienteId) {
 		return ResponseEntity.ok().body(service.findById(clienteId));
+	}
+	
+	@RequestMapping(method = RequestMethod.POST)
+	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO clienteDto) {
+		Cliente cliente = service.fromDTO(clienteDto);
+		cliente = service.insert(cliente);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+					.path("/{clienteId}").buildAndExpand(cliente.getId()).toUri();
+		return ResponseEntity.created(uri).build();
 	}
 	
 	@RequestMapping(value = "/{clienteId}", method = RequestMethod.PUT)
