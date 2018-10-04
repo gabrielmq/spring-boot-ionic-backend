@@ -98,6 +98,10 @@ public class Pedido implements Serializable {
 	public Set<ItemPedido> getItens() {
 		return itens;
 	}
+	
+	public double getValorTotal() {
+		return itens.stream().mapToDouble(i -> i.getSubTotal()).sum();
+	}
 
 	@Override
 	public int hashCode() {
