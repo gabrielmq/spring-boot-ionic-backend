@@ -18,9 +18,12 @@ import br.com.cursomc.sbinc.domain.Cliente;
 import br.com.cursomc.sbinc.domain.Endereco;
 import br.com.cursomc.sbinc.domain.dto.ClienteDTO;
 import br.com.cursomc.sbinc.domain.dto.ClienteNewDTO;
+import br.com.cursomc.sbinc.domain.enums.Perfil;
 import br.com.cursomc.sbinc.domain.enums.TipoCliente;
 import br.com.cursomc.sbinc.repositories.ClienteRepository;
 import br.com.cursomc.sbinc.repositories.EnderecoRepository;
+import br.com.cursomc.sbinc.security.UserSS;
+import br.com.cursomc.sbinc.services.exceptions.AuthorizationException;
 import br.com.cursomc.sbinc.services.exceptions.DataIntegrityException;
 import br.com.cursomc.sbinc.services.exceptions.ObjectNotFoundException;
 
@@ -37,6 +40,12 @@ public class ClienteService {
 	private BCryptPasswordEncoder encoder;
 	
 	public Cliente findById(Integer clienteId) {
+		
+		UserSS user = UserService.authenticated();
+		if (user == null || !user.hasRole(Perfil.ADMIN) && !clienteId.equals(user.getId())) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		
 		return repository.findById(clienteId)
 				.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " +clienteId
 						+ ", Tipo: "+Categoria.class.getName()));
