@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.cursomc.sbinc.domain.Cliente;
@@ -23,7 +24,7 @@ import br.com.cursomc.sbinc.domain.dto.ClienteNewDTO;
 import br.com.cursomc.sbinc.services.ClienteService;
 
 @RestController
-@RequestMapping(value = "clientes")
+@RequestMapping(value = "/clientes")
 public class ClienteResource {
 
 	@Autowired
@@ -71,5 +72,11 @@ public class ClienteResource {
 													 @RequestParam(value="orderBy", defaultValue="nome") String orderBy, 
 													 @RequestParam(value="direction", defaultValue="ASC") String direction) {
 		return ResponseEntity.ok().body(service.findPage(page, linesPerPage, orderBy, direction));
+	}
+	
+	@RequestMapping(value = "/picture", method = RequestMethod.POST)
+	public ResponseEntity<Void> uploadProfilePicture(@RequestParam(name="file") MultipartFile file) {
+		URI uri = service.uploadProfilePicture(file);
+		return ResponseEntity.created(uri).build();
 	}
 }

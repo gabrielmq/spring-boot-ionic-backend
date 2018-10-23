@@ -1,5 +1,6 @@
 package br.com.cursomc.sbinc.services;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.com.cursomc.sbinc.domain.Categoria;
 import br.com.cursomc.sbinc.domain.Cidade;
@@ -38,6 +40,9 @@ public class ClienteService {
 	
 	@Autowired
 	private BCryptPasswordEncoder encoder;
+	
+	@Autowired
+	private S3Service s3Service;
 	
 	public Cliente findById(Integer clienteId) {
 		
@@ -112,5 +117,9 @@ public class ClienteService {
 	private void updateData(Cliente newObj, Cliente obj) {
 		newObj.setNome(obj.getNome());
 		newObj.setEmail(obj.getEmail());		
+	}
+	
+	public URI uploadProfilePicture(MultipartFile file) {
+		return s3Service.uploadFile(file);
 	}
 }
