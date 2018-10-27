@@ -1,7 +1,5 @@
 package br.com.cursomc.sbinc.domain.enums;
 
-import java.util.Optional;
-
 public enum TipoCliente {
 
 	PESSOAFISICA(1, "Pessoa Física"),
